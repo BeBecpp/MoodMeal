@@ -4,8 +4,9 @@ from typing import List
 
 # Mongolian / common variants -> TheMealDB-friendly English ingredient search terms
 MEALDB_INGREDIENT_MAP = {
-    "тахиа": "chicken",
     "тахианы мах": "chicken",
+    "тахиан": "chicken",
+    "тахиа": "chicken",
     "тахианы цээж": "chicken_breast",
     "үхрийн мах": "beef",
     "үхэр": "beef",
@@ -48,6 +49,8 @@ def parse_user_ingredients(text: str) -> List[str]:
         return []
     # Replace newlines with commas, normalize separators
     raw = text.replace("\n", ",").replace(";", ",")
+    raw = re.sub(r"\s*болон\s*", ",", raw, flags=re.IGNORECASE)
+    raw = re.sub(r"\s*ба\s*", ",", raw, flags=re.IGNORECASE)
     parts = re.split(r"[,，]", raw)
     result: List[str] = []
     seen = set()

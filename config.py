@@ -1,9 +1,13 @@
 """Flask application configuration."""
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
+# .env нь үргэлж config.py-тай ижил хавтсанд байна (flask run-ийг өөр газраас
+# ажиллуулсан ч түлхүүр уншигдана).
+_BASE_DIR = Path(__file__).resolve().parent
+load_dotenv(_BASE_DIR / ".env")
 
 
 class Config:

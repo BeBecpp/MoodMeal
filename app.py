@@ -73,47 +73,14 @@ def create_app() -> Flask:
         )
 
         base_recipe_dict: Optional[Dict[str, Any]] = None
-        external_norm: Optional[Dict[str, Any]] = None
+        english_terms = map_to_mealdb_ingredients(user_ingredients)
+        external_norm: Optional[Dict[str, Any]] = mealdb.find_best_meal_for_pantry(
+            english_terms, user_ingredients
+        )
 
         strong = is_strong_local_match(best_score, user_ingredients)
         if strong and best_local:
             base_recipe_dict = recipe_to_prompt_dict(best_local)
-
-        if not strong:
-            english_terms = map_to_mealdb_ingredients(user_ingredients)
-            seen_ids = set()
-            merged_summaries: List[Dict[str, Any]] = []
-            for term in english_terms:
-                for m in mealdb.filter_by_ingredient(term):
-                    mid = m.get("idMeal")
-                    if mid and mid not in seen_ids:
-                        seen_ids.add(mid)
-                        merged_summaries.append(m)
-                if len(merged_summaries) >= 12:
-                    break
-
-            best_meal: Optional[Dict[str, Any]] = None
-            best_overlap = -1.0
-            user_lower = [u.lower() for u in user_ingredients]
-            for summary in merged_summaries[:8]:
-                mid = summary.get("idMeal")
-                if not mid:
-                    continue
-                full = mealdb.lookup_by_id(mid)
-                if not full:
-                    continue
-                norm = mealdb.normalize_meal(full)
-                overlap = 0.0
-                for ing in norm.get("ingredients", []):
-                    name_l = ing["name"].lower()
-                    for u in user_lower:
-                        if u in name_l or name_l in u:
-                            overlap += 1
-                if overlap > best_overlap:
-                    best_overlap = overlap
-                    best_meal = norm
-            if best_meal:
-                external_norm = best_meal
 
         if not strong and not external_norm and best_local:
             base_recipe_dict = recipe_to_prompt_dict(best_local)

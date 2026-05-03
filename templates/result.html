@@ -3,11 +3,24 @@
 {% block content %}
 <section class="container result-wrap">
   <article class="card recipe-card">
-    {% if recipe.image_url %}
-    <div class="recipe-hero-img">
-      <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}">
-    </div>
-    {% endif %}
+    <figure class="recipe-hero">
+      {% if recipe.image_url %}
+      <div class="recipe-hero-img">
+        <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}" loading="lazy" decoding="async" width="1200" height="675">
+      </div>
+      {% else %}
+      <div class="recipe-hero-placeholder" role="img" aria-label="Хоолны зураг">
+        <span class="ph-icon" aria-hidden="true">🍲</span>
+        <p>Орцонд тохирсон TheMealDB зураг олдсонгүй — жорын заавар нь бүрэн ажиллана.</p>
+      </div>
+      {% endif %}
+      {% if recipe.mealdb_reference_title and recipe.image_url %}
+      <figcaption class="image-credit">
+        <strong>TheMealDB</strong> — ойролцоо жор: «{{ recipe.mealdb_reference_title }}».
+        Зураг нь зөвхөн саналын харагдах байдал; Монголын гэрийн жорыг доорх алхмуудаар хийнэ үү.
+      </figcaption>
+      {% endif %}
+    </figure>
 
     <div class="recipe-header">
       <h1>{{ recipe.title }}</h1>
@@ -35,11 +48,10 @@
 
     <section class="recipe-block">
       <h2>Орц</h2>
-      <ul class="ingredient-list">
+      <ul class="ingredient-list ingredient-chips">
         {% for ing in recipe.ingredients %}
         <li>
-          <strong>{{ ing.name }}</strong>
-          {% if ing.amount %}<span class="amount">{{ ing.amount }}</span>{% endif %}
+          <span class="ing-main"><strong>{{ ing.name }}</strong>{% if ing.amount %} <span class="amount">{{ ing.amount }}</span>{% endif %}</span>
           {% if ing.note %}<span class="ing-note">{{ ing.note }}</span>{% endif %}
         </li>
         {% endfor %}
@@ -48,9 +60,10 @@
 
     <section class="recipe-block">
       <h2>Хийх дараалал</h2>
-      <ol class="steps-list">
+      <p class="step-intro">Доорх алхмуудыг дарааллаар нь дагана уу. Гал, хугацааг өөрийн плито, савны хэмжээнээс хамааруулж тохируулж болно.</p>
+      <ol class="steps-list steps-detailed">
         {% for step in recipe.steps %}
-        <li>{{ step }}</li>
+        <li><span class="step-body">{{ step }}</span></li>
         {% endfor %}
       </ol>
     </section>

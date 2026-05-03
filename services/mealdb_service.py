@@ -77,3 +77,113 @@ class MealDBService:
             "source": meal.get("strSource") or "",
             "ingredients": ingredients,
         }
+
+    def find_best_meal_for_pantry(
+        self,
+        english_terms: List[str],
+        user_tokens: List[str],
+        max_summaries: int = 22,
+        max_lookups: int = 14,
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Merge filter.php results per ingredient, lookup meals, pick best overlap
+        for Gemini context + strMealThumb illustration image.
+        """
+        if not english_terms and not user_tokens:
+            return None
+
+        seen_ids: set = set()
+        summaries: List[Dict[str, Any]] = []
+
+        for term in english_terms:
+            for m in self.filter_by_ingredient(term):
+                mid = m.get("idMeal")
+                if mid and mid not in seen_ids:
+                    seen_ids.add(mid)
+                    summaries.append(m)
+            if len(summaries) >= max_summaries:
+                break
+
+        # Secondary: name search on first English token for more variety / images
+        if english_terms:
+            primary = english_terms[0].replace("_", " ")
+            if len(primary) >= 3:
+                for m in self.search_by_name(primary)[:5]:
+                    mid = m.get("idMeal")
+                    if mid and mid not in seen_ids:
+                        seen_ids.add(mid)
+                        summaries.append(m)
+
+        if not summaries:
+            return None
+
+        user_lower = [t.lower().strip() for t in user_tokens if t.strip()]
+        best: Optional[Dict[str, Any]] = None
+        best_score = -1.0
+
+        for m in summaries[:max_summaries]:
+            mid = m.get("idMeal")
+            if not mid:
+                continue
+            full = self.lookup_by_id(mid)
+            if not full:
+                continue
+            norm = self.normalize_meal(full)
+            sc = self._score_meal_overlap(norm, english_terms, user_lower)
+            if norm.get("image"):
+                sc += 0.35
+            if sc > best_score:
+                best_score = sc
+                best = norm
+            max_lookups -= 1
+            if max_lookups <= 0:
+                break
+
+        # Fallback: any MealDB hit with a thumbnail (better than no photo)
+        if best is None or not (best.get("image") or "").strip():
+            for m in summaries[:10]:
+                mid = m.get("idMeal")
+                if not mid:
+                    continue
+                full = self.lookup_by_id(mid)
+                if not full:
+                    continue
+                norm = self.normalize_meal(full)
+                if (norm.get("image") or "").strip():
+                    return norm
+                if best is None:
+                    best = norm
+
+        return best
+
+    @staticmethod
+    def _score_meal_overlap(
+        norm: Dict[str, Any],
+        english_terms: List[str],
+        user_tokens_lower: List[str],
+    ) -> float:
+        score = 0.0
+        ing_blob = " ".join(
+            (i.get("name") or "").lower() for i in norm.get("ingredients", [])
+        )
+        title_l = (norm.get("title") or "").lower()
+
+        for raw in english_terms:
+            e = raw.lower().replace("_", " ").strip()
+            if len(e) < 2:
+                continue
+            parts = e.split()
+            for p in parts:
+                if len(p) >= 3 and p in ing_blob:
+                    score += 2.0
+            if e in ing_blob:
+                score += 1.5
+            if e in title_l:
+                score += 0.5
+
+        # Light boost if Mongolian token appears in English ingredient (rare)
+        for u in user_tokens_lower:
+            if len(u) >= 4 and u in ing_blob:
+                score += 0.25
+
+        return score
