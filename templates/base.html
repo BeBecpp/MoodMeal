@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fff5eb">
+  <meta name="color-scheme" content="light">
   <title>{% block title %}MoodMeal AI{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,13 +14,13 @@
 <body>
   <header class="site-header">
     <div class="container header-inner">
-      <a class="logo" href="{{ url_for('index') }}">🍲 MoodMeal AI</a>
-      <button type="button" class="nav-toggle" aria-label="Цэс нээх">☰</button>
-      <nav class="main-nav">
-        <a href="{{ url_for('index') }}">Нүүр</a>
-        <a href="{{ url_for('ingredients_list') }}">Орцууд</a>
-        <a href="{{ url_for('saved') }}">Жор хадгалсан</a>
-        <a href="{{ url_for('about') }}">Тухай</a>
+      <a class="logo" href="{{ url_for('index') }}"><span class="logo-mark" aria-hidden="true">🍲</span><span class="logo-text">MoodMeal AI</span></a>
+      <button type="button" class="nav-toggle" aria-label="Цэс нээх" aria-expanded="false">☰</button>
+      <nav class="main-nav" aria-label="Үндсэн цэс">
+        <a class="nav-link" href="{{ url_for('index') }}">Нүүр</a>
+        <a class="nav-link" href="{{ url_for('ingredients_list') }}">Орцууд</a>
+        <a class="nav-link" href="{{ url_for('saved') }}">Хадгалсан</a>
+        <a class="nav-link" href="{{ url_for('about') }}">Тухай</a>
       </nav>
     </div>
   </header>
@@ -39,10 +41,14 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p>MoodMeal AI — гэрийн гал тогооны дулаахан туслах 🌼</p>
+      <div class="footer-brand">
+        <p class="footer-tagline">MoodMeal AI</p>
+        <p class="footer-desc">Гэрийн гал тогооны дулаахан туслах — сэтгэл, орц, цаг агаартай зөвлөгөө 🌼</p>
+      </div>
       {% if gemini_configured is defined and not gemini_configured %}
-        <p class="footer-note">Одоогоор Gemini түлхүүр тохируулаагүй байна — mock жор ашиглана.</p>
+        <p class="footer-note">Gemini түлхүүр тохируулаагүй байна — одоогоор mock жор ашиглана.</p>
       {% endif %}
+      <p class="footer-copy">MoodMeal — хувийн ашиглалтад зориулав.</p>
     </div>
   </footer>
 

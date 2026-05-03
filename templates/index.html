@@ -1,16 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Нүүр — MoodMeal AI{% endblock %}
 {% block content %}
+<div class="page-home">
 <section class="hero">
   <div class="container hero-inner">
+    <p class="hero-eyebrow">Гэрийн жорын туслах</p>
     <h1>Өнөөдөр гэр бүлдээ юу хийж өгөх вэ?</h1>
     <p class="hero-sub">Сэтгэл санаа, гэрт байгаа орц, цаг агаартаа тохируулан дулаахан жор санал болгуулъя.</p>
   </div>
 </section>
 
 <section class="container form-section">
-  <div class="card form-card">
+  <div class="card form-card form-card-elevated">
     <form class="mood-form" method="post" action="{{ url_for('generate') }}" id="generate-form" novalidate>
+      <p class="form-intro">Доорх талбаруудыг бөглөөд <strong>«Жор санал болгох»</strong> дарна уу — хэдэн секундэд санал гарна.</p>
       <div class="field">
         <label for="mood">Өнөөдрийн сэтгэл санаа</label>
         <select name="mood" id="mood" required>
@@ -93,4 +96,5 @@
     </form>
   </div>
 </section>
+</div>
 {% endblock %}

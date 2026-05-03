@@ -2,8 +2,9 @@
 {% block title %}Орц нэмэх — MoodMeal AI{% endblock %}
 {% block content %}
 <section class="container narrow">
-  <div class="card form-card">
-    <h1>Шинэ орц нэмэх</h1>
+  <div class="card form-card form-card-elevated">
+    <h1 class="page-title-inline">Шинэ орц нэмэх</h1>
+    <p class="form-intro">Орцны сан руу шинэ мөр нэмнэ. Англи нэр байвал TheMealDB-ийн зураг автоматаар холбогдоно.</p>
     <form method="post" action="{{ url_for('ingredients_add') }}">
       <div class="field">
         <label for="name">Нэр (Монгол) *</label>

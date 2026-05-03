@@ -1,50 +1,89 @@
 {% extends "base.html" %}
 {% block title %}MealDB үр дүн — MoodMeal AI{% endblock %}
 {% block content %}
-<section class="container page-head">
-  <h1>TheMealDB үр дүн</h1>
-  {% if ingredient_text is defined %}
+<section class="container page-head mealdb-page-head">
+  <h1 class="page-title-display">TheMealDB үр дүн</h1>
+  {% if random_meal %}
+  <p class="lead">Санамсаргүй сонгогдсон жор — зураг, орц, зааврыг шалгах туршилт.</p>
+  {% elif ingredient_text is defined %}
   <p class="lead">Оруулсан текст: <em>{{ ingredient_text }}</em></p>
   <p class="muted">Хайлтын орц (англиар): {{ mapped | join(', ') }}</p>
+  {% else %}
+  <p class="lead">TheMealDB-аас ирсэн үр дүн.</p>
   {% endif %}
 </section>
 
-<section class="container mealdb-grid">
-  {% if random_meal %}
-  <div class="card recipe-card">
-    <h2>Санамсаргүй жор</h2>
-    {% if random_meal.image %}
-    <div class="recipe-hero-img"><img src="{{ random_meal.image }}" alt=""></div>
-    {% endif %}
-    <h3>{{ random_meal.title }}</h3>
-    <p class="muted">{{ random_meal.area }} · {{ random_meal.category }}</p>
-    <p class="small-instr">{{ random_meal.instructions[:400] }}{% if random_meal.instructions|length > 400 %}…{% endif %}</p>
-    <h4>Орцууд</h4>
-    <ul class="ingredient-list">
-      {% for ing in random_meal.ingredients %}
-      <li><strong>{{ ing.name }}</strong> — {{ ing.measure }}</li>
-      {% endfor %}
-    </ul>
-  </div>
-  {% endif %}
+{% if random_meal %}
+<section class="container mealdb-random-wrap">
+  <article class="mealdb-showcase-card">
+    <div class="mealdb-showcase-hero">
+      {% if random_meal.image %}
+      <img src="{{ random_meal.image }}" alt="{{ random_meal.title }}" loading="lazy" decoding="async" width="800" height="450">
+      {% else %}
+      <div class="mealdb-showcase-hero-placeholder" aria-hidden="true">🍽</div>
+      {% endif %}
+    </div>
+    <div class="mealdb-showcase-body">
+      <p class="mealdb-showcase-kicker">Санамсаргүй жор</p>
+      <h2 class="mealdb-showcase-title">{{ random_meal.title }}</h2>
+      <div class="mealdb-showcase-meta">
+        {% if random_meal.area %}<span class="mealdb-pill">{{ random_meal.area }}</span>{% endif %}
+        {% if random_meal.category %}<span class="mealdb-pill">{{ random_meal.category }}</span>{% endif %}
+        {% if random_meal.id %}<span class="mealdb-pill muted-pill">ID {{ random_meal.id }}</span>{% endif %}
+      </div>
+      {% set instr = random_meal.instructions or '' %}
+      {% if instr %}
+      <div class="mealdb-instr-scroll">
+        <h3 class="mealdb-subheading">Заавар</h3>
+        <div class="mealdb-instr-text">{{ instr | replace('\r\n', '\n') | replace('\r', '\n') }}</div>
+      </div>
+      {% endif %}
+      {% if random_meal.ingredients %}
+      <div class="mealdb-ing-block">
+        <h3 class="mealdb-subheading">Орцууд</h3>
+        <ul class="mealdb-ing-list">
+          {% for ing in random_meal.ingredients %}
+          <li>
+            <span class="mealdb-ing-name">{{ ing.name }}</span>
+            {% if ing.measure %}<span class="mealdb-ing-measure">{{ ing.measure }}</span>{% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      {% if random_meal.youtube %}
+      <p class="mealdb-link-row"><a class="btn btn-outline btn-sm" href="{{ random_meal.youtube }}" target="_blank" rel="noopener">YouTube нээх</a></p>
+      {% endif %}
+    </div>
+  </article>
+</section>
+{% endif %}
 
+<section class="container mealdb-grid{% if random_meal %} mealdb-grid-below-showcase{% endif %}">
   {% for m in meals %}
-  <div class="card mealdb-thumb">
-    {% if m.strMealThumb %}
-    <img src="{{ m.strMealThumb }}" alt="{{ m.strMeal }}">
-    {% endif %}
-    <h3>{{ m.strMeal }}</h3>
-    <p class="muted">ID: {{ m.idMeal }}</p>
-  </div>
+  <article class="mealdb-thumb-card">
+    <div class="mealdb-thumb-media">
+      {% if m.strMealThumb %}
+      <img src="{{ m.strMealThumb }}" alt="{{ m.strMeal }}" loading="lazy">
+      {% else %}
+      <div class="mealdb-thumb-placeholder" aria-hidden="true">🥘</div>
+      {% endif %}
+    </div>
+    <div class="mealdb-thumb-body">
+      <h3 class="mealdb-thumb-title">{{ m.strMeal }}</h3>
+      <p class="mealdb-thumb-id">ID: {{ m.idMeal }}</p>
+    </div>
+  </article>
   {% endfor %}
 
   {% if not random_meal and not meals %}
-  <p>Үр дүн олдсонгүй. Өөр орцоор туршина уу.</p>
+  <p class="mealdb-empty">Үр дүн олдсонгүй. Өөр орцоор туршина уу.</p>
   {% endif %}
 </section>
 
-<div class="container actions-row">
-  <a class="btn btn-ghost" href="{{ url_for('about') }}">Тухай хуудас руу</a>
+<div class="container actions-row mealdb-actions">
+  <a class="btn btn-outline" href="{{ url_for('mealdb_random') }}">Дахин санамсаргүй</a>
+  <a class="btn btn-ghost" href="{{ url_for('about') }}">Тухай</a>
   <a class="btn btn-primary" href="{{ url_for('index') }}">Нүүр</a>
 </div>
 {% endblock %}
