@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}{{ recipe.title }} — MoodMeal AI{% endblock %}
+{% block content %}
+<section class="container result-wrap">
+  <article class="card recipe-card">
+    {% if recipe.image_url %}
+    <div class="recipe-hero-img">
+      <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}">
+    </div>
+    {% endif %}
+
+    <div class="recipe-header">
+      <h1>{{ recipe.title }}</h1>
+      <div class="badge-row">
+        {% if recipe.source == 'mock' or recipe.origin == 'mock' %}
+          <span class="badge badge-mock">Mock жор</span>
+        {% elif recipe.source == 'gemini' and recipe.origin == 'local' %}
+          <span class="badge badge-gemini">Gemini</span>
+          <span class="badge badge-soft">Гэрийн жорыг Gemini тохируулсан</span>
+        {% elif recipe.source == 'gemini' and recipe.origin == 'mealdb' %}
+          <span class="badge badge-gemini">Gemini</span>
+          <span class="badge badge-soft">TheMealDB-аас сэдэвлэн Gemini тохируулсан</span>
+        {% elif recipe.source == 'gemini' %}
+          <span class="badge badge-gemini">Gemini жор</span>
+        {% else %}
+          <span class="badge badge-soft">{{ recipe.source }}</span>
+        {% endif %}
+      </div>
+      <p class="recipe-reason">{{ recipe.short_reason }}</p>
+      <div class="recipe-meta">
+        <span>🍽 {{ recipe.servings }} хүн</span>
+        <span>⏱ {{ recipe.prep_time }}</span>
+      </div>
+    </div>
+
+    <section class="recipe-block">
+      <h2>Орц</h2>
+      <ul class="ingredient-list">
+        {% for ing in recipe.ingredients %}
+        <li>
+          <strong>{{ ing.name }}</strong>
+          {% if ing.amount %}<span class="amount">{{ ing.amount }}</span>{% endif %}
+          {% if ing.note %}<span class="ing-note">{{ ing.note }}</span>{% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section class="recipe-block">
+      <h2>Хийх дараалал</h2>
+      <ol class="steps-list">
+        {% for step in recipe.steps %}
+        <li>{{ step }}</li>
+        {% endfor %}
+      </ol>
+    </section>
+
+    {% if recipe.substitution_tips %}
+    <section class="recipe-block soft-panel">
+      <h2>Орц солих зөвлөгөө</h2>
+      <ul>
+        {% for tip in recipe.substitution_tips %}
+        <li>{{ tip }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+
+    <section class="recipe-block tips-grid">
+      <div class="tip-card">
+        <h3>Өргөх зөвлөгөө</h3>
+        <p>{{ recipe.serving_tips }}</p>
+      </div>
+      <div class="tip-card">
+        <h3>Хүүхдэд</h3>
+        <p>{{ recipe.child_friendly_note }}</p>
+      </div>
+      <div class="tip-card">
+        <h3>Хадгалалт</h3>
+        <p>{{ recipe.storage_note }}</p>
+      </div>
+    </section>
+
+    <p class="warm-msg">{{ recipe.warm_message }}</p>
+
+    <div class="actions-row">
+      <form method="post" action="{{ url_for('saved') }}" class="inline-form">
+        <input type="hidden" name="title" value="{{ recipe.title }}">
+        <input type="hidden" name="input_mood" value="{{ form.mood }}">
+        <input type="hidden" name="input_ingredients" value="{{ form.ingredients }}">
+        <input type="hidden" name="weather" value="{{ form.weather }}">
+        <input type="hidden" name="meal_time" value="{{ form.meal_time }}">
+        <input type="hidden" name="servings" value="{{ form.servings }}">
+        <input type="hidden" name="time_limit" value="{{ form.time_limit }}">
+        <input type="hidden" name="food_style" value="{{ form.food_style }}">
+        <input type="hidden" name="source" value="{{ recipe.source }}">
+        <input type="hidden" name="image_url" value="{{ recipe.image_url or '' }}">
+        <textarea name="recipe_content" class="visually-hidden" aria-hidden="true">{{ recipe | tojson }}</textarea>
+        <button type="submit" class="btn btn-secondary">Жорыг хадгалах</button>
+      </form>
+      <a class="btn btn-outline" href="{{ url_for('index') }}">Дахин өөр жор санал болгох</a>
+      <a class="btn btn-ghost" href="{{ url_for('index') }}">Нүүр хуудас руу буцах</a>
+    </div>
+  </article>
+</section>
+{% endblock %}

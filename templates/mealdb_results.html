@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}MealDB үр дүн — MoodMeal AI{% endblock %}
+{% block content %}
+<section class="container page-head">
+  <h1>TheMealDB үр дүн</h1>
+  {% if ingredient_text is defined %}
+  <p class="lead">Оруулсан текст: <em>{{ ingredient_text }}</em></p>
+  <p class="muted">Хайлтын орц (англиар): {{ mapped | join(', ') }}</p>
+  {% endif %}
+</section>
+
+<section class="container mealdb-grid">
+  {% if random_meal %}
+  <div class="card recipe-card">
+    <h2>Санамсаргүй жор</h2>
+    {% if random_meal.image %}
+    <div class="recipe-hero-img"><img src="{{ random_meal.image }}" alt=""></div>
+    {% endif %}
+    <h3>{{ random_meal.title }}</h3>
+    <p class="muted">{{ random_meal.area }} · {{ random_meal.category }}</p>
+    <p class="small-instr">{{ random_meal.instructions[:400] }}{% if random_meal.instructions|length > 400 %}…{% endif %}</p>
+    <h4>Орцууд</h4>
+    <ul class="ingredient-list">
+      {% for ing in random_meal.ingredients %}
+      <li><strong>{{ ing.name }}</strong> — {{ ing.measure }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% for m in meals %}
+  <div class="card mealdb-thumb">
+    {% if m.strMealThumb %}
+    <img src="{{ m.strMealThumb }}" alt="{{ m.strMeal }}">
+    {% endif %}
+    <h3>{{ m.strMeal }}</h3>
+    <p class="muted">ID: {{ m.idMeal }}</p>
+  </div>
+  {% endfor %}
+
+  {% if not random_meal and not meals %}
+  <p>Үр дүн олдсонгүй. Өөр орцоор туршина уу.</p>
+  {% endif %}
+</section>
+
+<div class="container actions-row">
+  <a class="btn btn-ghost" href="{{ url_for('about') }}">Тухай хуудас руу</a>
+  <a class="btn btn-primary" href="{{ url_for('index') }}">Нүүр</a>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Орц нэмэх — MoodMeal AI{% endblock %}
+{% block content %}
+<section class="container narrow">
+  <div class="card form-card">
+    <h1>Шинэ орц нэмэх</h1>
+    <form method="post" action="{{ url_for('ingredients_add') }}">
+      <div class="field">
+        <label for="name">Нэр (Монгол) *</label>
+        <input type="text" name="name" id="name" required>
+      </div>
+      <div class="field">
+        <label for="name_en">Нэр (Англи)</label>
+        <input type="text" name="name_en" id="name_en">
+      </div>
+      <div class="field">
+        <label for="category">Ангилал</label>
+        <select name="category" id="category">
+          <option value="meat">meat</option>
+          <option value="vegetable">vegetable</option>
+          <option value="grain">grain</option>
+          <option value="dairy">dairy</option>
+          <option value="spice">spice</option>
+          <option value="sauce">sauce</option>
+          <option value="egg">egg</option>
+          <option value="seafood">seafood</option>
+          <option value="noodle">noodle</option>
+          <option value="other" selected>other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="taste_profile">Амтны тодорхойлолт</label>
+        <input type="text" name="taste_profile" id="taste_profile">
+      </div>
+      <div class="field">
+        <label for="nutrition_note">Тэжээлийн тэмдэглэл</label>
+        <input type="text" name="nutrition_note" id="nutrition_note">
+      </div>
+      <div class="field">
+        <label for="common_pairings">Ихэвчлэн хослуулдаг</label>
+        <input type="text" name="common_pairings" id="common_pairings">
+      </div>
+      <div class="field checkbox-field">
+        <label>
+          <input type="checkbox" name="is_common" value="1" checked>
+          Гэрийн түгээмэл орц
+        </label>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Хадгалах</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

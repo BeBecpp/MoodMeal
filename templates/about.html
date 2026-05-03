@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Тухай — MoodMeal AI{% endblock %}
+{% block content %}
+<section class="container narrow about-page">
+  <div class="card cozy-card">
+    <h1>MoodMeal AI гэж юу вэ?</h1>
+    <p>
+      MoodMeal AI нь эх, аав, гэрийн гал тогооны эзэгтэй нарт зориулсан дулаахан, гэр бүлийн жорын туслах юм.
+      Таны сэтгэл санаа, гэрт байгаа орц, цаг агаар, хооллох цаг зэргийг харгалзан ойлголттойгоор жор санал болгоно.
+    </p>
+    <p>
+      Эхлээд өөрийн жорын сан (SQLite), дараа нь TheMealDB-аас санаа авч, эцэст нь <strong>Google Gemini 2.5 Flash</strong>
+      загвараар Монгол гэрийн хэв маягт тохируулан жорыг бичнэ. API түлхүүр байхгүй эсвэл алдаа гарвал автоматаар
+      mock жор ашиглагдана — апп үргэлж ажиллана.
+    </p>
+    <h2>TheMealDB туршилт</h2>
+    <p class="muted">Нэг орцоор нэг удаад хайдаг тул олон орцыг дараалан шалгана.</p>
+    <form class="stack-form" method="post" action="{{ url_for('mealdb_test') }}">
+      <label for="ingredient_text">Орцын жагсаалт</label>
+      <textarea name="ingredient_text" id="ingredient_text" rows="2" placeholder="жишээ: төмс, өндөг, тахиа"></textarea>
+      <button type="submit" class="btn btn-secondary">MealDB хайх</button>
+    </form>
+    <p style="margin-top:1rem;">
+      <a class="btn btn-outline" href="{{ url_for('mealdb_random') }}">Санамсаргүй MealDB жор үзэх</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

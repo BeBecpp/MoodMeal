@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Хадгалсан жор — MoodMeal AI{% endblock %}
+{% block content %}
+<section class="container page-head">
+  <h1>Хадгалсан жорууд</h1>
+  <p class="lead">Дараа нь дахин харахад бэлэн — гэр бүлээрээ хуваалцаарай.</p>
+</section>
+
+<section class="container saved-grid">
+  {% for item in saved %}
+  <div class="card saved-card">
+    <h2>{{ item.content.title or item.row.title }}</h2>
+    <p class="muted small">
+      {{ item.row.created_at.strftime('%Y-%m-%d %H:%M') }} · {{ item.row.meal_time or '' }} · {{ item.row.servings }} хүн
+    </p>
+    {% if item.content.short_reason %}
+    <p>{{ item.content.short_reason }}</p>
+    {% endif %}
+    {% if item.content.steps %}
+    <ol class="mini-steps">
+      {% for s in item.content.steps[:4] %}
+      <li>{{ s }}</li>
+      {% endfor %}
+    </ol>
+    {% endif %}
+  </div>
+  {% else %}
+  <p>Хадгалсан жор байхгүй байна. Эхлээд жор үүсгээд «Жорыг хадгалах» дарна уу.</p>
+  {% endfor %}
+</section>
+{% endblock %}

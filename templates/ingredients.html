@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Орцууд — MoodMeal AI{% endblock %}
+{% block content %}
+<section class="container page-head">
+  <h1>Орцны сан</h1>
+  <p class="lead">Гэрийн түгээмэл орцууд — жор тааруулахад тусална.</p>
+  <a class="btn btn-primary" href="{{ url_for('ingredients_add') }}">Шинэ орц нэмэх</a>
+</section>
+
+<section class="container ingredients-grid">
+  {% for ing in ingredients %}
+  <div class="card ingredient-card">
+    <span class="chip chip-{{ ing.category }}">{{ ing.category }}</span>
+    <h2>{{ ing.name }}</h2>
+    {% if ing.name_en %}<p class="muted">{{ ing.name_en }}</p>{% endif %}
+    {% if ing.taste_profile %}<p><strong>Амт:</strong> {{ ing.taste_profile }}</p>{% endif %}
+    {% if ing.nutrition_note %}<p><strong>Тэжээл:</strong> {{ ing.nutrition_note }}</p>{% endif %}
+    {% if ing.common_pairings %}<p><strong>Хослуулах:</strong> {{ ing.common_pairings }}</p>{% endif %}
+  </div>
+  {% else %}
+  <p>Орц одоогоор байхгүй. <code>python seed.py</code> ажиллуулна уу.</p>
+  {% endfor %}
+</section>
+{% endblock %}

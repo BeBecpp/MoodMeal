@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Нүүр — MoodMeal AI{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="container hero-inner">
+    <h1>Өнөөдөр гэр бүлдээ юу хийж өгөх вэ?</h1>
+    <p class="hero-sub">Сэтгэл санаа, гэрт байгаа орц, цаг агаартаа тохируулан дулаахан жор санал болгуулъя.</p>
+  </div>
+</section>
+
+<section class="container form-section">
+  <div class="card form-card">
+    <form class="mood-form" method="post" action="{{ url_for('generate') }}" id="generate-form" novalidate>
+      <div class="field">
+        <label for="mood">Өнөөдрийн сэтгэл санаа</label>
+        <select name="mood" id="mood" required>
+          <option value="Ядарсан">Ядарсан</option>
+          <option value="Стрессдсэн">Стрессдсэн</option>
+          <option value="Аз жаргалтай">Аз жаргалтай</option>
+          <option value="Тайван" selected>Тайван</option>
+          <option value="Гунигтай">Гунигтай</option>
+          <option value="Эрч хүчтэй">Эрч хүчтэй</option>
+          <option value="Хөнгөн юм идмээр">Хөнгөн юм идмээр</option>
+          <option value="Цадтал идмээр">Цадтал идмээр</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="ingredients">Гэрт байгаа орцууд</label>
+        <textarea name="ingredients" id="ingredients" rows="4" required
+          placeholder="Жишээ: өндөг, төмс, будаа, сонгино, тахианы мах"></textarea>
+        <p class="field-hint" id="chip-preview"></p>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="servings">Хэдэн хүн идэх вэ?</label>
+          <input type="number" name="servings" id="servings" min="1" value="2" required>
+        </div>
+        <div class="field">
+          <label for="meal_time">Хооллох цаг</label>
+          <select name="meal_time" id="meal_time" required>
+            <option value="Өглөөний цай">Өглөөний цай</option>
+            <option value="Өдрийн хоол" selected>Өдрийн хоол</option>
+            <option value="Оройн хоол">Оройн хоол</option>
+            <option value="Хөнгөн зууш">Хөнгөн зууш</option>
+            <option value="Хүүхдийн хоол">Хүүхдийн хоол</option>
+            <option value="Гэр бүлийн хоол">Гэр бүлийн хоол</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="weather">Гадаа ямар байна?</label>
+        <select name="weather" id="weather" required>
+          <option value="Хүйтэн">Хүйтэн</option>
+          <option value="Дулаахан" selected>Дулаахан</option>
+          <option value="Халуун">Халуун</option>
+          <option value="Бороотой">Бороотой</option>
+          <option value="Салхитай">Салхитай</option>
+          <option value="Цастай">Цастай</option>
+          <option value="Бүрхэг">Бүрхэг</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="time_limit">Хоол хийх боломжит хугацаа</label>
+        <select name="time_limit" id="time_limit" required>
+          <option value="15 минут">15 минут</option>
+          <option value="30 минут" selected>30 минут</option>
+          <option value="45 минут">45 минут</option>
+          <option value="1 цаг+">1 цаг+</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="food_style">Хоолны хэв маяг</label>
+        <select name="food_style" id="food_style" required>
+          <option value="Монгол гэрийн хоол" selected>Монгол гэрийн хоол</option>
+          <option value="Солонгос маягийн">Солонгос маягийн</option>
+          <option value="Хөнгөн healthy">Хөнгөн healthy</option>
+          <option value="Хүүхдэд тохиромжтой">Хүүхдэд тохиромжтой</option>
+          <option value="Төсөв хэмнэсэн">Төсөв хэмнэсэн</option>
+          <option value="Халуун дулаан comfort food">Халуун дулаан comfort food</option>
+          <option value="Гэр бүлийн хоол">Гэр бүлийн хоол</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" id="generate-btn">
+        Жор санал болгох
+      </button>
+    </form>
+  </div>
+</section>
+{% endblock %}
