@@ -1,5 +1,7 @@
 # MoodMeal AI
 
+English: A warm Mongolian AI recipe chatbot built with Flask, SQLite, TheMealDB, and Gemini 2.5 Flash. It recommends cozy home-style meals based on mood, available ingredients, weather, meal time, and servings.
+
 MoodMeal AI нь гэрийн гал тогоонд зориулсан дулаахан, ойлголттой жорын вэб апп юм. Сэтгэл санаа, гэрт байгаа орц, цаг агаар, хооллох цаг зэргийг харгалзан SQLite дахь жорын сан, TheMealDB болон **Google Gemini 2.5 Flash** загвараар санал өгнө.
 
 ## Онцлог
