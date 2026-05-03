@@ -4,6 +4,10 @@ Safe to run repeatedly — clears seeded Ingredient/Recipe tables only.
 """
 from app import app
 from models import Ingredient, Recipe, RecipeIngredient, db
+from services.ingredient_image_service import (
+    build_mealdb_ingredient_image_url,
+    ensure_sqlite_ingredient_image_column,
+)
 
 INGREDIENTS = [
     ("өндөг", "egg", "egg", "аминдэм", "Өдрийн эрч хүч", "сонгино, төмс", True),
@@ -682,21 +686,29 @@ RECIPES = [
 def seed():
     with app.app_context():
         db.create_all()
+        ensure_sqlite_ingredient_image_column(db)
         RecipeIngredient.query.delete()
         Recipe.query.delete()
         Ingredient.query.delete()
         db.session.commit()
 
         for row in INGREDIENTS:
+            name_en = row[1]
+            img = (
+                build_mealdb_ingredient_image_url(name_en, "medium")
+                if name_en
+                else None
+            )
             db.session.add(
                 Ingredient(
                     name=row[0],
-                    name_en=row[1],
+                    name_en=name_en,
                     category=row[2],
                     taste_profile=row[3],
                     nutrition_note=row[4],
                     common_pairings=row[5],
                     is_common_home_item=row[6],
+                    image_url=img,
                 )
             )
         db.session.commit()

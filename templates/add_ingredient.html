@@ -11,7 +11,13 @@
       </div>
       <div class="field">
         <label for="name_en">Нэр (Англи)</label>
-        <input type="text" name="name_en" id="name_en">
+        <input type="text" name="name_en" id="name_en" placeholder="жишээ: chicken breast">
+        <p class="field-hint">Хоосон үлдээвэл зураг автоматаар үүсэхгүй. Нэр оруувал TheMealDB-ийн орцны зургийн хаяг тооцоолно.</p>
+      </div>
+      <div class="field">
+        <label for="image_url">Зургийн холбоос (сонголттой)</label>
+        <input type="url" name="image_url" id="image_url" placeholder="https://...">
+        <p class="field-hint">Хоосон бол <code>name_en</code>-аар TheMealDB medium зураг ашиглана.</p>
       </div>
       <div class="field">
         <label for="category">Ангилал</label>

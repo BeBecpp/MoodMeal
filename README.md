@@ -80,6 +80,18 @@ GEMINI_MODEL=gemini-2.5-flash
 3. Үр дүн дээр **«Gemini жор»** эсвэл **«Gemini»** badge харагдана (mock биш).
 4. Терминалд `[Gemini] generation failed` гэж гарвал сүлжээ / түлхүүр / JSON алдаа — энэ үед автоматаар mock руу шилжинэ.
 
+## Орцны зураг (TheMealDB ingredient images)
+
+Орц (`Ingredient`) бүрт `image_url` талбар байж болно. Англи нэр (`name_en`) байвал төсөл **TheMealDB-ийн статик орцны зургийн загварыг** ашиглан medium хэмжээний хаяг үүсгэнэ:
+
+- Суурь: `https://www.themealdb.com/images/ingredients/{ingredient}.png`
+- Хэмжээ: `{ingredient}-small.png`, `{ingredient}-medium.png`, `{ingredient}-large.png`
+- `{ingredient}` = `name_en` lowercase, **зайг доогуур зураас** (` ` → `_`), жишээ нь `chicken breast` → `chicken_breast-medium.png`
+
+`seed.py` нь `name_en` байгаа бүх орцонд автоматаар `image_url` онооно. **Орц нэмэх** хуудсанд зураг хоосон, `name_en` байвал сервер дээр ижил логик ажиллана. Зураг байхгүй бол орцны карт дээр **🥕** placeholder харагдана.
+
+Логик: `services/ingredient_image_service.py` → `build_mealdb_ingredient_image_url`.
+
 ## TheMealDB турших
 
 1. **Тухай** хуудас руу орно.

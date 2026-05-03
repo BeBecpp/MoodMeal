@@ -1,24 +1,43 @@
 {% extends "base.html" %}
 {% block title %}Орцууд — MoodMeal AI{% endblock %}
 {% block content %}
-<section class="container page-head">
+<section class="container page-head ingredients-page-head">
   <h1>Орцны сан</h1>
-  <p class="lead">Гэрийн түгээмэл орцууд — жор тааруулахад тусална.</p>
+  <p class="lead">Гэрийн түгээмэл орцууд — жор тааруулахад тусална. Зураг нь TheMealDB-ийн орцны зургийн сангаас (Англи нэрээр).</p>
   <a class="btn btn-primary" href="{{ url_for('ingredients_add') }}">Шинэ орц нэмэх</a>
 </section>
 
-<section class="container ingredients-grid">
+<section class="container ingredients-cozy-grid">
   {% for ing in ingredients %}
-  <div class="card ingredient-card">
-    <span class="chip chip-{{ ing.category }}">{{ ing.category }}</span>
-    <h2>{{ ing.name }}</h2>
-    {% if ing.name_en %}<p class="muted">{{ ing.name_en }}</p>{% endif %}
-    {% if ing.taste_profile %}<p><strong>Амт:</strong> {{ ing.taste_profile }}</p>{% endif %}
-    {% if ing.nutrition_note %}<p><strong>Тэжээл:</strong> {{ ing.nutrition_note }}</p>{% endif %}
-    {% if ing.common_pairings %}<p><strong>Хослуулах:</strong> {{ ing.common_pairings }}</p>{% endif %}
-  </div>
+  <article class="ingredient-cozy-card">
+    <div class="ingredient-cozy-media">
+      {% if ing.image_url %}
+      <img src="{{ ing.image_url }}" alt="{{ ing.name }}" loading="lazy" decoding="async" width="400" height="280">
+      {% else %}
+      <div class="ingredient-cozy-placeholder" role="img" aria-label="Зураг байхгүй">
+        <span class="ingredient-cozy-placeholder-emoji" aria-hidden="true">🥕</span>
+      </div>
+      {% endif %}
+    </div>
+    <div class="ingredient-cozy-body">
+      <span class="ingredient-cozy-pill">{{ ing.category }}</span>
+      <h2 class="ingredient-cozy-title">{{ ing.name }}</h2>
+      {% if ing.name_en %}
+      <p class="ingredient-cozy-en">{{ ing.name_en }}</p>
+      {% endif %}
+      {% if ing.taste_profile %}
+      <p class="ingredient-cozy-line"><span class="ingredient-cozy-label">Амтны тодорхойлолт</span> {{ ing.taste_profile }}</p>
+      {% endif %}
+      {% if ing.nutrition_note %}
+      <p class="ingredient-cozy-line"><span class="ingredient-cozy-label">Тэжээлийн тэмдэглэл</span> {{ ing.nutrition_note }}</p>
+      {% endif %}
+      {% if ing.common_pairings %}
+      <p class="ingredient-cozy-line ingredient-cozy-pair"><span class="ingredient-cozy-label">Хослуулах</span> {{ ing.common_pairings }}</p>
+      {% endif %}
+    </div>
+  </article>
   {% else %}
-  <p>Орц одоогоор байхгүй. <code>python seed.py</code> ажиллуулна уу.</p>
+  <p class="ingredients-empty">Орц одоогоор байхгүй. <code>python seed.py</code> ажиллуулна уу.</p>
   {% endfor %}
 </section>
 {% endblock %}

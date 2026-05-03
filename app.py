@@ -7,6 +7,10 @@ from flask import Flask, flash, redirect, render_template, request, url_for
 from config import Config
 from models import Ingredient, Recipe, RecipeIngredient, SavedRecipe, db
 from services.gemini_recipe_service import generate_recipe
+from services.ingredient_image_service import (
+    build_mealdb_ingredient_image_url,
+    ensure_sqlite_ingredient_image_column,
+)
 from services.ingredient_mapper import map_to_mealdb_ingredients, parse_user_ingredients
 from services.ingredient_service import match_ingredients
 from services.mealdb_service import MealDBService
@@ -21,6 +25,10 @@ def create_app() -> Flask:
     app = Flask(__name__)
     app.config.from_object(Config)
     db.init_app(app)
+
+    with app.app_context():
+        db.create_all()
+        ensure_sqlite_ingredient_image_column(db)
 
     mealdb = MealDBService()
 
@@ -129,14 +137,19 @@ def create_app() -> Flask:
         if not name:
             flash("Нэр заавал оруулна уу.", "error")
             return redirect(url_for("ingredients_add"))
+        name_en = (request.form.get("name_en") or "").strip() or None
+        image_url = (request.form.get("image_url") or "").strip() or None
+        if not image_url and name_en:
+            image_url = build_mealdb_ingredient_image_url(name_en, "medium")
         row = Ingredient(
             name=name,
-            name_en=(request.form.get("name_en") or "").strip() or None,
+            name_en=name_en,
             category=(request.form.get("category") or "other").strip(),
             taste_profile=(request.form.get("taste_profile") or "").strip() or None,
             nutrition_note=(request.form.get("nutrition_note") or "").strip() or None,
             common_pairings=(request.form.get("common_pairings") or "").strip() or None,
             is_common_home_item=bool(request.form.get("is_common")),
+            image_url=image_url,
         )
         db.session.add(row)
         db.session.commit()

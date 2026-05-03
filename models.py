@@ -19,6 +19,7 @@ class Ingredient(db.Model):
     nutrition_note = db.Column(db.String(255), nullable=True)
     common_pairings = db.Column(db.String(255), nullable=True)
     is_common_home_item = db.Column(db.Boolean, default=True)
+    image_url = db.Column(db.String(500), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
